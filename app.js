@@ -759,6 +759,13 @@ function renderFontsGrid() {
             card.classList.add('active-font');
         }
         
+        if (state.selectedImageUrl) {
+            card.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${state.selectedImageUrl}')`;
+            card.style.backgroundSize = 'cover';
+            card.style.backgroundPosition = 'center';
+            card.style.textShadow = '0 2px 5px rgba(0,0,0,0.8)';
+        }
+        
         // Preview text
         const textEl = document.createElement('div');
         textEl.className = 'font-preview-text';
@@ -1495,8 +1502,6 @@ function setupAudioFeatures() {
         if (query) {
             searchSongs(query);
         } else {
-            const loadMoreWrapper = document.getElementById('audio-load-more-wrapper');
-            if (loadMoreWrapper) loadMoreWrapper.classList.add('hidden');
             renderSearchResults(CURATED_REELS_MUSIC);
         }
     });
@@ -1507,8 +1512,6 @@ function setupAudioFeatures() {
             if (query) {
                 searchSongs(query);
             } else {
-                const loadMoreWrapper = document.getElementById('audio-load-more-wrapper');
-                if (loadMoreWrapper) loadMoreWrapper.classList.add('hidden');
                 renderSearchResults(CURATED_REELS_MUSIC);
             }
         }
@@ -1518,16 +1521,6 @@ function setupAudioFeatures() {
     btnPlaySelected.addEventListener('click', () => {
         toggleBackgroundAudio();
     });
-    
-    // Load more audio
-    const btnLoadMoreAudio = document.getElementById('btn-load-more-audio');
-    if (btnLoadMoreAudio) {
-        btnLoadMoreAudio.addEventListener('click', () => {
-            if (typeof currentAudioSearchQuery !== 'undefined' && currentAudioSearchQuery) {
-                searchSongs(currentAudioSearchQuery, true);
-            }
-        });
-    }
     
     // Browse click inside dropzone
     const browseAudioLink = document.getElementById('browse-audio-link');
@@ -1760,79 +1753,35 @@ bgAudio.onended = () => {
     toggleBackgroundAudio(false);
 };
 
-let currentAudioSearchQuery = '';
-let audioSearchOffset = 0;
-let currentAudioSearchResults = [];
-const AUDIO_SEARCH_LIMIT = 10;
-
-async function searchSongs(query, append = false) {
+async function searchSongs(query) {
     if (!query) return;
     
-    if (!append) {
-        audioSearchOffset = 0;
-        currentAudioSearchQuery = query;
-        currentAudioSearchResults = [];
-        audioResultsList.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: var(--text-muted);"><i class="fa-solid fa-spinner spinner-icon"></i> Searching music...</div>';
-        
-        try {
-            // Fetch up to 50 results initially to cache them for local pagination
-            const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=50`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("Search failed");
-            
-            const data = await res.json();
-            currentAudioSearchResults = (data.results || []).map(track => ({
-                title: track.trackName || 'Unknown Title',
-                artist: track.artistName || 'Unknown Artist',
-                url: track.previewUrl || '',
-                thumb: track.artworkUrl60 || track.artworkUrl100 || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=100&auto=format&fit=crop'
-            }));
-        } catch (e) {
-            console.error("Music search failed:", e);
-            audioResultsList.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: #ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Search failed. Check network connection.</div>';
-            return;
-        }
-    } else {
-        const spinner = document.getElementById('audio-load-more-spinner');
-        const btnLoadMore = document.getElementById('btn-load-more-audio');
-        if (spinner) spinner.classList.remove('hidden');
-        if (btnLoadMore) btnLoadMore.disabled = true;
-        
-        // Small artificial delay for UX
-        await new Promise(r => setTimeout(r, 400));
-    }
+    audioResultsList.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: var(--text-muted);"><i class="fa-solid fa-spinner spinner-icon"></i> Searching music...</div>';
     
     try {
-        // Local pagination
-        const tracksToRender = currentAudioSearchResults.slice(audioSearchOffset, audioSearchOffset + AUDIO_SEARCH_LIMIT);
-        audioSearchOffset += tracksToRender.length;
+        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=200`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Search failed");
         
-        renderSearchResults(tracksToRender, append);
+        const data = await res.json();
+        const tracks = (data.results || []).map(track => ({
+            title: track.trackName || 'Unknown Title',
+            artist: track.artistName || 'Unknown Artist',
+            url: track.previewUrl || '',
+            thumb: track.artworkUrl60 || track.artworkUrl100 || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=100&auto=format&fit=crop'
+        }));
         
-        const wrapper = document.getElementById('audio-load-more-wrapper');
-        if (wrapper) {
-            if (audioSearchOffset >= currentAudioSearchResults.length) {
-                wrapper.classList.add('hidden');
-            } else {
-                wrapper.classList.remove('hidden');
-            }
-        }
-    } finally {
-        if (append) {
-            const spinner = document.getElementById('audio-load-more-spinner');
-            const btnLoadMore = document.getElementById('btn-load-more-audio');
-            if (spinner) spinner.classList.add('hidden');
-            if (btnLoadMore) btnLoadMore.disabled = false;
-        }
+        renderSearchResults(tracks);
+    } catch (e) {
+        console.error("Music search failed:", e);
+        audioResultsList.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: #ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Search failed. Check network connection.</div>';
     }
 }
 
-function renderSearchResults(tracks, append = false) {
-    if (!append) {
-        audioResultsList.innerHTML = '';
-    }
+function renderSearchResults(tracks) {
+    audioResultsList.innerHTML = '';
     
-    if (tracks.length === 0 && !append) {
+    if (tracks.length === 0) {
         audioResultsList.innerHTML = '<div style="text-align: center; padding: 1.5rem; color: var(--text-muted);">No tracks found.</div>';
         return;
     }
