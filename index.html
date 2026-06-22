@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindi Instagram Quote Post Creator - 8K Quality</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;800&family=Outfit:wght@300;400;600;800&family=Poppins:ital,wght@0,400;0,700;1,400;1,700&family=Rozha+One&family=Yatra+One&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-main-row">
+                <div class="logo-wrapper">
+                    <i class="fa-brands fa-instagram instagram-icon"></i>
+                    <h1>तस्वीर <span class="accent-text">AI</span></h1>
+                </div>
+                <div class="theme-toggle-container">
+                    <span class="theme-label"><i class="fa-solid fa-moon"></i></span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-checkbox">
+                        <span class="switch-slider"></span>
+                    </label>
+                    <span class="theme-label"><i class="fa-solid fa-sun"></i></span>
+                </div>
+            </div>
+            <p class="subtitle">Create Ultra-Realistic 8K Instagram Story & Quote Posts</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Left Side: Controls -->
+            <section class="controls-panel">
+                <!-- Step 1: Input Quote -->
+                <div class="card panel-section">
+                    <div class="section-header">
+                        <span class="step-badge">1</span>
+                        <h2>Enter Quote</h2>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="quote-input" placeholder="यहाँ अपना विचार या शायरी लिखें..."
+                            rows="3">Hello World :)</textarea>
+                    </div>
+                </div>
+
+
+
+                <!-- Step 2: Search Pexels or Upload -->
+                <div class="card panel-section">
+                    <div class="section-header">
+                        <span class="step-badge">2</span>
+                        <h2>Background Image</h2>
+                    </div>
+
+                    <div class="search-controls">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass magic-icon"></i>
+                            <input type="text" id="prompt-input"
+                                placeholder="Search backgrounds (e.g. rainy street, nature, tea)..." value="BMW M5">
+                        </div>
+                        <div class="button-group flex-row">
+                            <button id="btn-generate-ai" class="btn btn-primary">
+                                <i class="fa-solid fa-arrows-rotate spinner-icon hidden" id="ai-spinner"></i>
+                                <i class="fa-solid fa-magnifying-glass"></i> Search
+                            </button>
+                            <!-- Upload Button -->
+                            <button id="btn-browse-img" class="btn btn-secondary">
+                                <i class="fa-solid fa-images"></i> Upload Photo
+                            </button>
+                            <input type="file" id="file-upload" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+
+                    <!-- Suggestions / Results Grid -->
+                    <div class="gallery-container">
+                        <div class="gallery-header">
+                            <h3>Pexels Library</h3>
+                        </div>
+                        <div class="image-grid" id="image-grid">
+                            <!-- Image cards will be loaded here dynamically -->
+                        </div>
+                        <div class="load-more-wrapper">
+                            <button id="btn-load-more" class="btn btn-secondary hidden">
+                                <i class="fa-solid fa-spinner spinner-icon hidden" id="load-more-spinner"></i>
+                                Load More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Customize Style -->
+                <div class="card panel-section">
+                    <div class="section-header-justify">
+                        <div class="section-header">
+                            <span class="step-badge">3</span>
+                            <h2>Customize Style</h2>
+                        </div>
+                        <!-- Auto Style Button -->
+                        <button id="btn-magic-style" class="btn btn-magic">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Surprise Me
+                        </button>
+                    </div>
+
+                    <div class="customizer-grid">
+                        <!-- Font Selection -->
+                        <div class="control-item font-control-container">
+                            <label>Typography</label>
+                            <div class="font-selector-row">
+                                <select id="font-select">
+                                    <option value="'Noto Sans Devanagari', sans-serif" selected>Noto Sans (Default)
+                                    </option>
+                                    <option value="'Yatra One', cursive">Yatra One</option>
+                                    <option value="'Rozha One', serif">Rozha One</option>
+                                    <option value="'Poppins', sans-serif">Poppins</option>
+                                </select>
+                                <button id="btn-open-fonts" class="btn btn-secondary btn-icon-only"
+                                    title="Open Stylish Fonts Library">
+                                    <i class="fa-solid fa-font"></i> Stylish Fonts Library
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Alignment -->
+                        <div class="control-item">
+                            <label>Text Alignment</label>
+                            <div class="toggle-group" id="align-group">
+                                <button class="btn btn-toggle" data-value="left"><i
+                                        class="fa-solid fa-align-left"></i></button>
+                                <button class="btn btn-toggle active" data-value="center"><i
+                                        class="fa-solid fa-align-center"></i></button>
+                                <button class="btn btn-toggle" data-value="right"><i
+                                        class="fa-solid fa-align-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Text Size -->
+                        <div class="control-item">
+                            <div class="slider-label">
+                                <label for="size-slider">Font Size</label>
+                                <span id="size-val">52px</span>
+                            </div>
+                            <input type="range" id="size-slider" min="20" max="120" value="52">
+                        </div>
+
+                        <!-- Vertical Position -->
+                        <div class="control-item">
+                            <div class="slider-label">
+                                <label for="position-slider">Vertical Position</label>
+                                <span id="position-val">50%</span>
+                            </div>
+                            <input type="range" id="position-slider" min="10" max="90" value="50">
+                        </div>
+
+                        <!-- Dark Overlay -->
+                        <div class="control-item">
+                            <div class="slider-label">
+                                <label for="overlay-slider">Background Dark Overlay</label>
+                                <span id="overlay-val">45%</span>
+                            </div>
+                            <input type="range" id="overlay-slider" min="0" max="100" value="45">
+                        </div>
+
+                        <!-- Drop Shadow Customization -->
+                        <div class="control-item font-control-container shadow-settings-card"
+                            style="grid-column: span 2; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.15); margin-top: 10px;">
+                            <label
+                                style="font-weight: 700; color: var(--accent); font-size: 0.95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-circle-half-stroke"></i> Text Shadow Settings
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <!-- Shadow Color -->
+                                <div class="control-item">
+                                    <label for="shadow-color-picker">Color</label>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="color" id="shadow-color-picker" value="#000000"
+                                            style="padding: 2px; height: 38px; width: 60px; border-radius: 4px; border: 1px solid var(--border-color); cursor: pointer; background: transparent;">
+                                        <span id="shadow-color-val"
+                                            style="font-size: 0.85rem; font-family: monospace; color: var(--text-secondary);">#000000</span>
+                                    </div>
+                                </div>
+                                <!-- Shadow Opacity -->
+                                <div class="control-item">
+                                    <div class="slider-label">
+                                        <label for="shadow-opacity-slider">Opacity</label>
+                                        <span id="shadow-opacity-val">85%</span>
+                                    </div>
+                                    <input type="range" id="shadow-opacity-slider" min="0" max="100" value="85">
+                                </div>
+                                <!-- Shadow Blur -->
+                                <div class="control-item">
+                                    <div class="slider-label">
+                                        <label for="shadow-blur-slider">Blur (Softness)</label>
+                                        <span id="shadow-blur-val">15px</span>
+                                    </div>
+                                    <input type="range" id="shadow-blur-slider" min="0" max="50" value="15">
+                                </div>
+                                <!-- Shadow Offset X -->
+                                <div class="control-item">
+                                    <div class="slider-label">
+                                        <label for="shadow-offset-x">Offset X</label>
+                                        <span id="shadow-offset-x-val">0px</span>
+                                    </div>
+                                    <input type="range" id="shadow-offset-x" min="-30" max="30" value="0">
+                                </div>
+                                <!-- Shadow Offset Y -->
+                                <div class="control-item" style="grid-column: span 2;">
+                                    <div class="slider-label">
+                                        <label for="shadow-offset-y">Offset Y</label>
+                                        <span id="shadow-offset-y-val">4px</span>
+                                    </div>
+                                    <input type="range" id="shadow-offset-y" min="-30" max="30" value="4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Add Audio Track -->
+                <div class="card panel-section">
+                    <div class="section-header">
+                        <span class="step-badge">4</span>
+                        <h2>Add Audio Track</h2>
+                    </div>
+
+                    <!-- Selected Audio Preview Card -->
+                    <div class="selected-audio-widget" id="audio-widget">
+                        <div class="audio-widget-info">
+                            <div class="audio-widget-icon">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div class="audio-widget-meta">
+                                <span class="audio-title" id="selected-audio-title">No audio selected</span>
+                                <span class="audio-artist" id="selected-audio-artist">Choose a track below</span>
+                            </div>
+                        </div>
+                        <button id="btn-play-selected" class="btn btn-audio-control btn-secondary btn-icon-only" title="Play/Pause Selected" type="button" disabled>
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                    </div>
+
+                    <!-- Audio Trim & Video Duration Controls -->
+                    <div class="audio-trim-container hidden" id="audio-trim-container" style="display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                        <label style="font-weight: 700; color: var(--accent); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-scissors"></i> Audio Trim (Set Start & End)
+                        </label>
+                        <div class="customizer-grid" style="grid-template-columns: 1fr 1fr; display: grid; gap: 12px;">
+                            <div class="control-item">
+                                <div class="slider-label">
+                                    <label for="audio-start-slider">Start Time</label>
+                                    <span id="audio-start-val" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); background: rgba(245, 158, 11, 0.08); padding: 2px 8px; border-radius: 12px;">0:00</span>
+                                </div>
+                                <input type="range" id="audio-start-slider" min="0" max="100" value="0" step="0.1">
+                            </div>
+                            <div class="control-item">
+                                <div class="slider-label">
+                                    <label for="audio-end-slider">End Time</label>
+                                    <span id="audio-end-val" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); background: rgba(245, 158, 11, 0.08); padding: 2px 8px; border-radius: 12px;">0:15</span>
+                                </div>
+                                <input type="range" id="audio-end-slider" min="0" max="100" value="15" step="0.1">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.04);">
+                            <span>Total Video Length:</span>
+                            <span id="audio-total-duration-val" style="font-weight: 800; color: var(--accent); font-size: 0.95rem;">15.0s</span>
+                        </div>
+                    </div>
+
+                    <!-- Audio Selection Tabs -->
+                    <div class="audio-tabs">
+                        <button class="btn btn-audio-tab active" data-tab="search-tab" type="button">
+                            <i class="fa-solid fa-magnifying-glass"></i> Search
+                        </button>
+                        <button class="btn btn-audio-tab" data-tab="upload-tab" type="button">
+                            <i class="fa-solid fa-file-arrow-up"></i> Upload
+                        </button>
+                        <button class="btn btn-audio-tab" data-tab="url-tab" type="button">
+                            <i class="fa-solid fa-link"></i> URL
+                        </button>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div class="audio-tab-content" id="search-tab">
+                        <div class="search-input-row">
+                            <input type="text" id="audio-search-input" placeholder="Search Instagram/trending music...">
+                            <button id="btn-search-audio" class="btn btn-primary" type="button">
+                                <i class="fa-solid fa-magnifying-glass"></i> Search
+                            </button>
+                        </div>
+                        <!-- Search Results List -->
+                        <div class="audio-results-list" id="audio-results-list">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div class="load-more-wrapper hidden" id="audio-load-more-wrapper" style="text-align: center; margin-top: 15px;">
+                            <button id="btn-load-more-audio" class="btn btn-secondary">
+                                <i class="fa-solid fa-spinner spinner-icon hidden" id="audio-load-more-spinner"></i>
+                                Load More
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="audio-tab-content hidden" id="upload-tab">
+                        <div class="audio-upload-dropzone" id="audio-dropzone">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <p>Drag & drop your audio here or <span class="browse-link" id="browse-audio-link">browse files</span></p>
+                            <span class="upload-file-limit">Supports MP3, WAV, M4A, AAC</span>
+                            <input type="file" id="audio-file-upload" accept="audio/*" class="hidden">
+                        </div>
+                    </div>
+
+                    <div class="audio-tab-content hidden" id="url-tab">
+                        <div class="control-item">
+                            <label for="audio-url-input">Direct Audio Link</label>
+                            <input type="text" id="audio-url-input" placeholder="https://example.com/song.mp3">
+                            <button id="btn-load-audio-url" class="btn btn-secondary" style="margin-top: 8px;" type="button">
+                                Load Link
+                            </button>
+                            <p class="warning-text" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
+                                <i class="fa-solid fa-circle-exclamation" style="color: var(--accent);"></i> Note: The audio URL must allow cross-origin requests (CORS).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Preview & Export -->
+            <section class="preview-panel">
+                <div class="sticky-preview">
+                    <div class="preview-card-wrapper">
+                        <!-- 9:16 Ratio Container -->
+                        <div class="preview-aspect-container">
+                            <div class="preview-card" id="preview-card-element">
+                                <canvas id="preview-canvas"></canvas>
+                                <!-- Interactive overlay helpers -->
+                                <div class="canvas-grid-lines hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Format Selector -->
+                    <div class="action-wrapper format-selector-wrapper" style="margin-bottom: 15px;">
+                        <div class="format-toggle-group" style="display: flex; gap: 10px; width: 100%;">
+                            <button class="btn btn-toggle active" data-format="image" id="btn-format-image" style="display: flex; align-items: center; gap: 8px; justify-content: center; flex: 1;" type="button">
+                                <i class="fa-regular fa-image"></i>
+                                <span>Image (PNG)</span>
+                            </button>
+                            <button class="btn btn-toggle" data-format="video" id="btn-format-video" style="display: flex; align-items: center; gap: 8px; justify-content: center; flex: 1;" type="button">
+                                <i class="fa-solid fa-video"></i>
+                                <span>Video (MP4)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Big Glowing Download Button -->
+                    <div class="action-wrapper">
+                        <button id="btn-download-8k" class="btn btn-download">
+                            <span class="btn-icon-wrapper">
+                                <i class="fa-solid fa-circle-down download-icon"></i>
+                                <i class="fa-solid fa-spinner spinner-icon hidden" id="download-spinner"></i>
+                            </span>
+                            <span class="btn-text-wrapper">
+                                <span class="btn-title">Download 8K Poster</span>
+                                <span class="btn-desc">High Fidelity HDR Quality</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Stylish Fonts Library Modal -->
+    <div class="modal-overlay hidden" id="modal-fonts">
+        <div class="modal-content fonts-modal-content card">
+            <div class="modal-header">
+                <h2>Choose a Stylish Font</h2>
+                <button class="btn-close-modal" id="btn-close-fonts"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-search-bar">
+                <i class="fa-solid fa-magnifying-glass search-bar-icon"></i>
+                <input type="text" id="font-search" placeholder="Type font name to search...">
+            </div>
+
+            <div class="modal-tabs">
+                <button class="btn btn-tab active" id="tab-hindi-fonts">
+                    <i class="fa-solid fa-language"></i> Hindi Fonts (Devanagari)
+                </button>
+                <button class="btn btn-tab" id="tab-english-fonts">
+                    <i class="fa-solid fa-font"></i> English Fonts (Latin)
+                </button>
+            </div>
+
+            <div class="fonts-preview-grid" id="fonts-preview-grid">
+                <!-- Preview cards loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Surprise Me Layouts Modal -->
+    <div class="modal-overlay hidden" id="modal-magic-layouts">
+        <div class="modal-content fonts-modal-content card magic-layouts-content">
+            <div class="modal-header">
+                <h2>Surprise Me Layouts</h2>
+                <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                    <button class="btn btn-secondary btn-sm" id="btn-refresh-layouts"
+                        style="padding: 6px 12px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Layouts
+                    </button>
+                    <button class="btn-close-modal" id="btn-close-layouts" style="margin-left: 5px;"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+
+            <div class="layouts-grid" id="magic-layouts-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; overflow-y: auto; flex: 1; padding: 10px 5px;">
+                <!-- Layout cards loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Modal -->
+    <div class="modal-overlay hidden" id="modal-processing">
+        <div class="modal-content card">
+            <div class="modal-spinner-wrapper">
+                <div class="hdr-glow-spinner"></div>
+                <i class="fa-solid fa-wand-magic-sparkles magic-pulse"></i>
+            </div>
+            <h2>Processing 8K HDR Post</h2>
+            <div class="process-steps">
+                <div class="step-item active" id="pstep-1">
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                    <i class="fa-solid fa-spinner spinner-icon spinning"></i>
+                    <span>Upscaling background to 4320x7680 pixels...</span>
+                </div>
+                <div class="step-item" id="pstep-2">
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                    <i class="fa-solid fa-spinner spinner-icon spinning"></i>
+                    <span>Applying high-contrast shadow overlay...</span>
+                </div>
+                <div class="step-item" id="pstep-3">
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                    <i class="fa-solid fa-spinner spinner-icon spinning"></i>
+                    <span>Drawing high-fidelity Devnagari typography...</span>
+                </div>
+                <div class="step-item" id="pstep-4">
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                    <i class="fa-solid fa-spinner spinner-icon spinning"></i>
+                    <span>Exporting final 8K JPEG asset...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden audio elements -->
+    <audio id="bg-audio" crossorigin="anonymous" style="display: none;"></audio>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
