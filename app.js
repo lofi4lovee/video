@@ -2296,4 +2296,4 @@ function resetProcessingModal() {
     downloadSpinner.classList.add('hidden');
     state.isRecording = false;
 }
- 
+  
