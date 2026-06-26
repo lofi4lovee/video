@@ -1841,8 +1841,47 @@ function renderSearchResults(tracks) {
             e.stopPropagation();
             selectTrack(track);
         });
+
+        const btnDownload = document.createElement('button');
+        btnDownload.className = 'btn-result-action btn-result-play'; // reusing the style class
+        btnDownload.innerHTML = '<i class="fa-solid fa-download"></i>';
+        btnDownload.type = 'button';
+        btnDownload.title = 'Download Track';
+        
+        btnDownload.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+                const originalText = btnDownload.innerHTML;
+                btnDownload.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                btnDownload.disabled = true;
+
+                const response = await fetch(track.url);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                
+                let songName = track.title ? track.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() : 'downloaded_song';
+                a.download = songName + '.mp3';
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                
+                btnDownload.innerHTML = originalText;
+                btnDownload.disabled = false;
+            } catch (err) {
+                console.error("Failed to download audio:", err);
+                window.open(track.url, '_blank');
+                btnDownload.innerHTML = '<i class="fa-solid fa-download"></i>';
+                btnDownload.disabled = false;
+            }
+        });
         
         actions.appendChild(btnPlay);
+        actions.appendChild(btnDownload);
         actions.appendChild(btnSelect);
         
         item.appendChild(infoWrapper);
