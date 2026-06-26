@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 
@@ -246,34 +247,12 @@
                         <button id="btn-play-selected" class="btn btn-audio-control btn-secondary btn-icon-only" title="Play/Pause Selected" type="button" disabled>
                             <i class="fa-solid fa-play"></i>
                         </button>
+                        <button id="btn-download-audio" class="btn btn-audio-control btn-secondary btn-icon-only" title="Download Song" type="button" disabled>
+                            <i class="fa-solid fa-download"></i>
+                        </button>
                     </div>
 
-                    <!-- Audio Trim & Video Duration Controls -->
-                    <div class="audio-trim-container hidden" id="audio-trim-container" style="display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.15); transition: all 0.3s ease;">
-                        <label style="font-weight: 700; color: var(--accent); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-scissors"></i> Audio Trim (Set Start & End)
-                        </label>
-                        <div class="customizer-grid" style="grid-template-columns: 1fr 1fr; display: grid; gap: 12px;">
-                            <div class="control-item">
-                                <div class="slider-label">
-                                    <label for="audio-start-slider">Start Time</label>
-                                    <span id="audio-start-val" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); background: rgba(245, 158, 11, 0.08); padding: 2px 8px; border-radius: 12px;">0:00</span>
-                                </div>
-                                <input type="range" id="audio-start-slider" min="0" max="100" value="0" step="0.1">
-                            </div>
-                            <div class="control-item">
-                                <div class="slider-label">
-                                    <label for="audio-end-slider">End Time</label>
-                                    <span id="audio-end-val" style="font-size: 0.85rem; font-weight: 700; color: var(--accent); background: rgba(245, 158, 11, 0.08); padding: 2px 8px; border-radius: 12px;">0:15</span>
-                                </div>
-                                <input type="range" id="audio-end-slider" min="0" max="100" value="15" step="0.1">
-                            </div>
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.02); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.04);">
-                            <span>Total Video Length:</span>
-                            <span id="audio-total-duration-val" style="font-weight: 800; color: var(--accent); font-size: 0.95rem;">15.0s</span>
-                        </div>
-                    </div>
+
 
                     <!-- Audio Selection Tabs -->
                     <div class="audio-tabs">
@@ -459,6 +438,75 @@
     <audio id="bg-audio" crossorigin="anonymous" style="display: none;"></audio>
 
     <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadBtn = document.getElementById('btn-download-audio');
+            const bgAudio = document.getElementById('bg-audio');
+            
+            // Re-check button state occasionally or when specific events happen, 
+            // since app.js might change the src attribute dynamically.
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                        if (bgAudio.src && bgAudio.src !== '') {
+                            downloadBtn.disabled = false;
+                        } else {
+                            downloadBtn.disabled = true;
+                        }
+                    }
+                });
+            });
+            
+            if (bgAudio) {
+                observer.observe(bgAudio, { attributes: true });
+                if (bgAudio.src && bgAudio.src !== '') {
+                    downloadBtn.disabled = false;
+                }
+            }
+
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', async () => {
+                    if (!bgAudio || !bgAudio.src) return;
+                    try {
+                        const originalText = downloadBtn.innerHTML;
+                        downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                        downloadBtn.disabled = true;
+
+                        const response = await fetch(bgAudio.src);
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        
+                        const titleElement = document.getElementById('selected-audio-title');
+                        let songName = 'downloaded_song';
+                        if (titleElement && titleElement.innerText !== 'No audio selected') {
+                            songName = titleElement.innerText.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                        }
+                        
+                        a.download = songName + '.mp3';
+                        document.body.appendChild(a);
+                        a.click();
+                        
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                        
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    } catch (err) {
+                        console.error("Failed to download audio:", err);
+                        // Fallback: open in new tab
+                        window.open(bgAudio.src, '_blank');
+                        
+                        // Reset button
+                        downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i>';
+                        downloadBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html> 
